@@ -6,7 +6,8 @@ spec:
   selector:
     app: flask-web
   ports:
-    - protocol: TCP
+    - name: flask-svc-port
+      protocol: TCP
       port: 80
       targetPort: flask-web-port
   type: ClusterIP
