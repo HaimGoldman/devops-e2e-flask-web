@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-web-svc
+spec:
+  selector:
+    app: flask-web
+  ports:
+    - name: flask-svc-port
+      protocol: TCP
+      port: 80
+      targetPort: flask-web-port
+  type: ClusterIP

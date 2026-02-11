@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-web-deployment
+  labels:
+    app: flask-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flask-web
+  template:
+    metadata:
+      labels:
+        app: flask-web
+    spec:
+      containers:
+        - name: flask-web-container
+          image: haimgoldman/flask-web:v1.0
+          ports:
+            - name: flask-web-port
+              containerPort: 8000
