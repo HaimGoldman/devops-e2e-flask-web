@@ -15,8 +15,8 @@ spec:
         app: flask-web
     spec:
       containers:
-      - name: flask-web-container
-        image: haimgoldman/flask-web:v1.0
-        ports:
-        - name: flask-web-port
-          containerPort: 8000
+        - name: flask-web-container
+          image: haimgoldman/flask-web:v1.0
+          ports:
+            - name: flask-web-port
+              containerPort: 8000
