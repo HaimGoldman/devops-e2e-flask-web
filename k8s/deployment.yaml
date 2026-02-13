@@ -17,6 +17,7 @@ spec:
       containers:
         - name: flask-web-container
           image: haimgoldman/flask-web:v2.0
+          imagePullPolicy: IfNotPresent
           ports:
             - name: flask-web-port
               containerPort: 8000
