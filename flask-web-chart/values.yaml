@@ -1,0 +1,30 @@
+replicaCount: 3
+
+image:
+  repository: haimgoldman/flask-web
+  tag: v1.0
+  pullPolicy: IfNotPresent
+
+container:
+  name: flask-web-container
+  port: 8000
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+
+ingress:
+  className: nginx
+  host: flask.local
+  path: /
+  pathType: Prefix
+  annotations: {}
+  tls: []
+
+deployment:
+  annotations: {}
+
+labels:
+  app: flask-web
+  environment: ""

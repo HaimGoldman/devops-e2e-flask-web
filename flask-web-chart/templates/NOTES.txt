@@ -1,0 +1,16 @@
+Thank you for installing {{ .Chart.Name }}!
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
+  $ helm get all {{ .Release.Name }} -n {{ .Release.Namespace }}
+
+Application URL:
+  http://{{ .Values.ingress.host }}{{ .Values.ingress.path }}
+
+{{- if not (eq .Values.ingress.host "localhost") }}
+Make sure to add the following to your /etc/hosts (or C:\Windows\System32\drivers\etc\hosts on Windows):
+  127.0.0.1 {{ .Values.ingress.host }}
+{{- end }}
