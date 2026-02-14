@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
+      - '**'
 
 jobs:
   test:
@@ -78,6 +78,15 @@ jobs:
         run: |
           kubectl wait --for=condition=ready pod -l app=postgres -n test --timeout=120s
           kubectl wait --for=condition=ready pod -l app=flask-web -n test --timeout=120s
+
+      - name: Debug - Check pod status and logs
+        run: |
+          echo "=== Pod Status ==="
+          kubectl get pods -n test
+          echo "=== Flask Pod Logs ==="
+          kubectl logs -n test -l app=flask-web --tail=50
+          echo "=== PostgreSQL Pod Logs ==="
+          kubectl logs -n test -l app=postgres --tail=20
 
       - name: Set up Python
         uses: actions/setup-python@v4
