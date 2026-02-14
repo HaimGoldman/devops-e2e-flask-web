@@ -34,15 +34,17 @@ def test_health_endpoint(mock_db, client):
 
 @patch('app.get_db_connection')
 def test_stats_endpoint(mock_db, client):
+    mock_count = 3
+    
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
-    mock_cursor.fetchone.return_value = [5]
+    mock_cursor.fetchone.return_value = [mock_count]
     mock_conn.cursor.return_value = mock_cursor
     mock_db.return_value = mock_conn
     
     response = client.get('/stats')
     assert response.status_code == 200
-    assert response.json['last_hour'] == 5
-    assert response.json['last_day'] == 5
-    assert response.json['last_week'] == 5
-    assert response.json['last_month'] == 5
+    assert response.json['last_hour'] == mock_count
+    assert response.json['last_day'] == mock_count
+    assert response.json['last_week'] == mock_count
+    assert response.json['last_month'] == mock_count
