@@ -53,10 +53,53 @@ jobs:
           docker push ${{ vars.DOCKER_REPOSITORY }}:${{ steps.set-tag.outputs.tag }}
           docker push ${{ vars.DOCKER_REPOSITORY }}:latest
 
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Start Minikube
+        uses: medyagh/setup-minikube@latest
+
+      - name: Create test namespace
+        run: kubectl create namespace test
+
+      - name: Deploy app and database to test namespace
+        run: |
+          helm upgrade --install flask-web-test helm \
+            -f helm/values-dev.yaml \
+            --set image.tag=${{ needs.build-and-push.outputs.image_tag }} \
+            -n test
+
+      - name: Wait for pods to be ready
+        run: |
+          kubectl wait --for=condition=ready pod -l app=flask-web -n test --timeout=120s
+          kubectl wait --for=condition=ready pod -l app=postgres -n test --timeout=120s
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install test dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run integration tests
+        run: |
+          export APP_URL=http://$(kubectl get svc flask-web-test-svc -n test -o jsonpath='{.spec.clusterIP}')
+          pytest tests/test_integration.py -v
+
+      - name: Clean up test namespace
+        if: always()
+        run: kubectl delete namespace test
+
   deploy-dev:
     name: Deploy to Dev
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: integration-test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
