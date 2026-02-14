@@ -21,3 +21,14 @@ spec:
           ports:
             - name: flask-web-port
               containerPort: 8000
+          env:
+            - name: DB_HOST
+              value: postgres-svc
+            - name: DB_NAME
+              value: visitsdb
+            - name: DB_USER
+              value: postgres
+            - name: DB_PASSWORD
+              value: password
+            - name: DB_PORT
+              value: "5432"
