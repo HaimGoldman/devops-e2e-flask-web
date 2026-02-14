@@ -2,7 +2,7 @@ replicaCount: 3
 
 image:
   repository: haimgoldman/flask-web
-  tag: v2.0
+  tag: v3.0
   pullPolicy: IfNotPresent
 
 container:
@@ -24,6 +24,14 @@ ingress:
 
 deployment:
   annotations: {}
+
+postgres:
+  image: postgres
+  tag: "15"
+  database: visitsdb
+  user: postgres
+  password: password
+  storage: 1Gi
 
 labels:
   app: flask-web
