@@ -76,10 +76,7 @@ jobs:
 
       - name: Wait for pods to be ready
         run: |
-          kubectl wait --for=condition=ready pod -l app=postgres -n test --timeout=120s
-          echo "Waiting for PostgreSQL to complete initialization..."
-          sleep 10
-          kubectl wait --for=condition=ready pod -l app=flask-web -n test --timeout=120s
+          kubectl wait --for=condition=ready pod -l app=flask-web -n test --timeout=180s
 
       - name: Debug - Check pod status and logs
         run: |

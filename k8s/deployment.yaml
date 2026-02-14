@@ -14,6 +14,18 @@ spec:
       labels:
         app: flask-web
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:15
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h postgres-svc -p 5432 -U postgres; do
+                echo "Waiting for PostgreSQL to be ready..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready!"
       containers:
         - name: flask-web-container
           image: haimgoldman/flask-web:v3.0

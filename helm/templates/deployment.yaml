@@ -24,23 +24,24 @@ spec:
         environment: {{ .Values.labels.environment }}
         {{- end }}
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: {{ .Values.postgres.image }}:{{ .Values.postgres.tag }}
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h {{ .Release.Name }}-postgres-svc -p 5432 -U {{ .Values.postgres.user }}; do
+                echo "Waiting for PostgreSQL to be ready..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready!"
       containers:
         - name: {{ .Values.container.name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.container.port }}
-          env:
-            - name: DB_HOST
-              value: {{ .Release.Name }}-postgres-svc
-            - name: DB_NAME
-              value: {{ .Values.postgres.database }}
-            - name: DB_USER
-              value: {{ .Values.postgres.user }}
-            - name: DB_PASSWORD
-              value: {{ .Values.postgres.password }}
-            - name: DB_PORT
-              value: "5432"
           env:
             - name: DB_HOST
               value: {{ .Release.Name }}-postgres-svc
