@@ -78,27 +78,15 @@ jobs:
         run: |
           kubectl wait --for=condition=ready pod -l app=flask-web -n test --timeout=180s
 
-      - name: Debug - Check pod status and logs
+      - name: Run integration tests in pod
         run: |
-          echo "=== Pod Status ==="
-          kubectl get pods -n test
-          echo "=== Flask Pod Logs ==="
-          kubectl logs -n test -l app=flask-web --tail=50
-          echo "=== PostgreSQL Pod Logs ==="
-          kubectl logs -n test -l app=postgres --tail=20
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install test dependencies
-        run: pip install -r requirements-dev.txt
-
-      - name: Run integration tests
-        run: |
-          export APP_URL=http://$(kubectl get svc flask-web-test-svc -n test -o jsonpath='{.spec.clusterIP}')
-          pytest tests/test_integration.py -v
+          cat tests/test_integration.py | kubectl run pytest-runner -n test \
+            --image=python:3.10-slim --rm -i --restart=Never -- bash -c "
+              pip install -q pytest requests && 
+              cat > /tmp/test_integration.py && 
+              export APP_URL=http://flask-web-test-svc && 
+              pytest /tmp/test_integration.py -v
+            "
 
       - name: Clean up test namespace
         if: always()
