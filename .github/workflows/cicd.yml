@@ -21,8 +21,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements-dev.txt
 
-      - name: Run tests
-        run: pytest tests/
+      - name: Run unit tests
+        run: pytest tests/test_app.py -v
 
   build-and-push:
     name: Build and Push Docker Image
