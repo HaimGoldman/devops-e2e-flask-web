@@ -25,6 +25,14 @@ ingress:
 deployment:
   annotations: {}
 
+postgres:
+  image: postgres
+  tag: "15"
+  database: visitsdb
+  user: postgres
+  password: password
+  storage: 1Gi
+
 labels:
   app: flask-web
   environment: ""

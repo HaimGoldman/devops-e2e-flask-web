@@ -30,3 +30,25 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.container.port }}
+          env:
+            - name: DB_HOST
+              value: {{ .Release.Name }}-postgres-svc
+            - name: DB_NAME
+              value: {{ .Values.postgres.database }}
+            - name: DB_USER
+              value: {{ .Values.postgres.user }}
+            - name: DB_PASSWORD
+              value: {{ .Values.postgres.password }}
+            - name: DB_PORT
+              value: "5432"
+          env:
+            - name: DB_HOST
+              value: {{ .Release.Name }}-postgres-svc
+            - name: DB_NAME
+              value: {{ .Values.postgres.database }}
+            - name: DB_USER
+              value: {{ .Values.postgres.user }}
+            - name: DB_PASSWORD
+              value: {{ .Values.postgres.password }}
+            - name: DB_PORT
+              value: "5432"
