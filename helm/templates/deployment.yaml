@@ -30,12 +30,7 @@ spec:
         command:
         - sh
         - -c
-        - |
-          until pg_isready -h {{ .Release.Name }}-postgres-svc -p 5432 -U {{ .Values.postgres.user }}; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 2
-          done
-          echo "PostgreSQL is ready!"
+        - until pg_isready -h {{ .Release.Name }}-postgres-svc -p 5432 -U {{ .Values.postgres.user }}; do echo "Waiting for PostgreSQL..."; sleep 2; done
       containers:
       - name: {{ .Values.container.name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
