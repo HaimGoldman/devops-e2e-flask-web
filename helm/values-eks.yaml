@@ -1,0 +1,30 @@
+replicaCount: 1
+
+image:
+  repository: haimgoldman/flask-web
+  tag: latest
+  pullPolicy: Always
+
+container:
+  name: flask-web
+  port: 8000
+
+service:
+  type: LoadBalancer
+  port: 80
+
+labels:
+  app: flask-web
+  environment: dev
+
+postgres:
+  image: postgres
+  tag: "15"
+  database: visitsdb
+  user: postgres
+  password: password
+  storage: 1Gi
+  usePersistentVolume: true
+
+deployment:
+  annotations: {}
