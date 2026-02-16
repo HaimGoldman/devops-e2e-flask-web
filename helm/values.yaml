@@ -32,7 +32,7 @@ postgres:
   user: postgres
   password: password
   storage: 1Gi
-  usePersistentVolume: true  # Set to false for EKS without EBS CSI driver
+  usePersistentVolume: true  # Requires EBS CSI driver on EKS (installed via Terraform)
 
 monitoring:
   prometheus:
