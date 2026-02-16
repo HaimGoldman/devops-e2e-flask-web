@@ -36,3 +36,17 @@ spec:
                 name: {{ .Release.Name }}-svc
                 port:
                   number: {{ .Values.service.port }}
+          - path: /prometheus
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-prometheus-svc
+                port:
+                  number: 9090
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-grafana-svc
+                port:
+                  number: 3000

@@ -2,7 +2,7 @@ replicaCount: 3
 
 image:
   repository: haimgoldman/flask-web
-  tag: v3.0
+  tag: v3.1
   pullPolicy: IfNotPresent
 
 container:
