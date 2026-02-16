@@ -10,8 +10,18 @@ container:
   port: 8000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
+
+ingress:
+  className: alb
+  host: ""
+  path: /
+  pathType: Prefix
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /health
 
 labels:
   app: flask-web
@@ -25,6 +35,10 @@ postgres:
   password: password
   storage: 1Gi
   usePersistentVolume: true
+
+monitoring:
+  grafana:
+    serviceType: ClusterIP
 
 deployment:
   annotations: {}
