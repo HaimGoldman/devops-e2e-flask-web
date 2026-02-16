@@ -45,6 +45,7 @@ postgres:
   database: visitsdb
   user: postgres
   password: password
+  port: 5432
   storage: 1Gi
   usePersistentVolume: true  # Requires EBS CSI driver on EKS (installed via Terraform)
 
@@ -76,3 +77,15 @@ monitoring:
 labels:
   app: flask-web
   environment: ""
+
+blueGreen:
+  enabled: true
+  activeVersion: blue
+  blue:
+    replicas: 3
+    image:
+      tag: v3.1
+  green:
+    replicas: 0
+    image:
+      tag: v3.1

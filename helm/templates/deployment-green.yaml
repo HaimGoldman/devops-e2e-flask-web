@@ -1,21 +1,17 @@
+{{- if .Values.blueGreen.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployment
+  name: {{ .Release.Name }}-green
   labels:
     app: {{ .Values.labels.app }}
-    {{- if .Values.labels.environment }}
-    environment: {{ .Values.labels.environment }}
-    {{- end }}
-  {{- with .Values.deployment.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    version: green
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.blueGreen.green.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.labels.app }}
+      version: green
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -25,9 +21,7 @@ spec:
     metadata:
       labels:
         app: {{ .Values.labels.app }}
-        {{- if .Values.labels.environment }}
-        environment: {{ .Values.labels.environment }}
-        {{- end }}
+        version: green
     spec:
       initContainers:
         - name: wait-for-postgres
@@ -40,10 +34,9 @@ spec:
                 echo "Waiting for PostgreSQL to be ready..."
                 sleep 2
               done
-              echo "PostgreSQL is ready!"
       containers:
         - name: {{ .Values.container.name }}
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          image: {{ .Values.image.repository }}:{{ .Values.blueGreen.green.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.container.port }}
@@ -75,3 +68,4 @@ spec:
               value: {{ .Values.postgres.password }}
             - name: DB_PORT
               value: "{{ .Values.postgres.port }}"
+{{- end }}
