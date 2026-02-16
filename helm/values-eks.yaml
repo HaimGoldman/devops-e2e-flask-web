@@ -1,44 +1,6 @@
-replicaCount: 1
-
-image:
-  repository: haimgoldman/flask-web
-  tag: latest
-  pullPolicy: Always
-
-container:
-  name: flask-web
-  port: 8000
-
-service:
-  type: ClusterIP
-  port: 80
-
 ingress:
   className: alb
-  host: ""
-  path: /
-  pathType: Prefix
+  host: ""  # ALB responds to any host
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /health
-
-labels:
-  app: flask-web
-  environment: dev
-
-postgres:
-  image: postgres
-  tag: "15"
-  database: visitsdb
-  user: postgres
-  password: password
-  storage: 1Gi
-  usePersistentVolume: true
-
-monitoring:
-  grafana:
-    serviceType: ClusterIP
-
-deployment:
-  annotations: {}
