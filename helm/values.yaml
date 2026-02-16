@@ -45,6 +45,19 @@ monitoring:
     adminPassword: admin
     serviceType: ClusterIP
     port: 3000
+    rbac:
+      create: true
+    serviceAccount:
+      create: true
+      name: grafana-sa
+    sidecar:
+      image: quay.io/kiwigrid/k8s-sidecar
+      tag: 1.25.2
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        folder: /tmp/dashboards
+        searchNamespace: ALL
 
 labels:
   app: flask-web

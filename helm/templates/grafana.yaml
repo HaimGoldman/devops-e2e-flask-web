@@ -9,8 +9,66 @@ data:
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: http://{{ .Release.Name }}-prometheus-svc:{{ .Values.monitoring.prometheus.port }}
+        url: http://{{ .Release.Name }}-prometheus-svc:{{ .Values.monitoring.prometheus.port }}/prometheus
         isDefault: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-grafana-dashboard-provider
+data:
+  dashboardproviders.yaml: |
+    apiVersion: 1
+    providers:
+    - name: 'sidecar-provider'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      options:
+        path: /tmp/dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-flask-dashboard
+  labels:
+    {{ .Values.monitoring.grafana.sidecar.dashboards.label }}: "1"
+data:
+  flask-dashboard.json: |-
+{{ .Files.Get "dashboards/flask-dashboard.json" | indent 4 }}
+---
+{{- if .Values.monitoring.grafana.serviceAccount.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.monitoring.grafana.serviceAccount.name }}
+{{- end }}
+---
+{{- if .Values.monitoring.grafana.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Release.Name }}-grafana-role
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Release.Name }}-grafana-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .Release.Name }}-grafana-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.monitoring.grafana.serviceAccount.name }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -28,6 +86,10 @@ spec:
       labels:
         app: grafana
     spec:
+      serviceAccountName: {{ .Values.monitoring.grafana.serviceAccount.name }}
+      securityContext:
+        fsGroup: 472
+        runAsUser: 472
       containers:
         - name: grafana
           image: {{ .Values.monitoring.grafana.image }}:{{ .Values.monitoring.grafana.tag }}
@@ -47,12 +109,38 @@ spec:
               mountPath: /var/lib/grafana
             - name: grafana-datasources
               mountPath: /etc/grafana/provisioning/datasources
+            - name: grafana-dashboard-provider
+              mountPath: /etc/grafana/provisioning/dashboards/dashboardproviders.yaml
+              subPath: dashboardproviders.yaml
+            - name: grafana-dashboards
+              mountPath: /tmp/dashboards
+        {{- if .Values.monitoring.grafana.sidecar.dashboards.enabled }}
+        - name: grafana-sc-dashboard
+          image: {{ .Values.monitoring.grafana.sidecar.image }}:{{ .Values.monitoring.grafana.sidecar.tag }}
+          env:
+            - name: METHOD
+              value: WATCH
+            - name: LABEL
+              value: {{ .Values.monitoring.grafana.sidecar.dashboards.label }}
+            - name: FOLDER
+              value: {{ .Values.monitoring.grafana.sidecar.dashboards.folder }}
+            - name: RESOURCE
+              value: both
+          volumeMounts:
+            - name: grafana-dashboards
+              mountPath: /tmp/dashboards
+        {{- end }}
       volumes:
         - name: grafana-storage
           emptyDir: {}
         - name: grafana-datasources
           configMap:
             name: {{ .Release.Name }}-grafana-datasources
+        - name: grafana-dashboard-provider
+          configMap:
+            name: {{ .Release.Name }}-grafana-dashboard-provider
+        - name: grafana-dashboards
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
