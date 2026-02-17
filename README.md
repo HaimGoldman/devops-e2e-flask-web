@@ -70,7 +70,7 @@ A simple demonstration application used to showcase a production-grade **DevOps*
 
 2.  **Configure Kubectl**:
     ```bash
-    aws eks update-kubeconfig --region us-east-1 --name flask-web-dev
+    aws eks update-kubeconfig --region us-east-1 --name flask-web-prod
     ```
 
 3.  **Create Namespace & Secret**:
