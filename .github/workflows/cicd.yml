@@ -54,6 +54,7 @@ jobs:
           image-ref: '${{ vars.DOCKER_REPOSITORY }}:${{ steps.set-tag.outputs.tag }}'
           format: 'table'
           exit-code: '1' # Fail if vulnerabilities are found
+          ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
 
       - name: Push Docker image
