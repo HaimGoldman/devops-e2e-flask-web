@@ -115,6 +115,13 @@ jobs:
       - name: Create dev namespace
         run: kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Create DB Secret from GitHub Secrets
+        run: |
+          kubectl create secret generic flask-db-secret \
+            --from-literal=password='${{ secrets.DB_PASSWORD }}' \
+            -n dev \
+            --dry-run=client -o yaml | kubectl apply -f -
+          
       - name: Deploy to Dev with Helm
         run: |
           helm upgrade --install flask-web helm \
@@ -142,6 +149,13 @@ jobs:
 
       - name: Create prod namespace
         run: kubectl create namespace prod --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Create DB Secret from GitHub Secrets
+        run: |
+          kubectl create secret generic flask-db-secret \
+            --from-literal=password='${{ secrets.DB_PASSWORD }}' \
+            -n prod \
+            --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy to Prod with Helm
         run: |
