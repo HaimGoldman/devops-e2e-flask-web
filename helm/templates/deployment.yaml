@@ -74,9 +74,9 @@ spec:
               value: {{ .Values.postgres.user }}
             - name: DB_PASSWORD
               valueFrom:
-              secretKeyRef:
-                name: {{ .Values.postgres.existingSecret }}
-                key: {{ .Values.postgres.existingSecret.key }}
+                secretKeyRef:
+                  name: {{ .Values.postgres.existingSecret.name }}
+                  key: {{ .Values.postgres.existingSecret.key }}
             - name: DB_PORT
               value: "{{ .Values.postgres.port }}"
 {{- end }}

@@ -32,10 +32,9 @@ spec:
               value: {{ .Values.postgres.user }}
             - name: POSTGRES_PASSWORD
               valueFrom:
-              secretKeyRef:
-                name: {{ .Values.postgres.existingSecret }}
-                key: {{ .Values.postgres.existingSecret.key }}
-              value: {{ .Values.postgres.password }}
+                secretKeyRef:
+                  name: {{ .Values.postgres.existingSecret.name }}
+                  key: {{ .Values.postgres.existingSecret.key }}
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
           volumeMounts:
