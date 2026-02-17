@@ -121,10 +121,7 @@ This project was built to demonstrate a comprehensive **9-Step DevOps Roadmap**:
 4.  **CI/CD**: Automated pipeline for Build, Test, Scan, and Deploy.
 5.  **Integration Testing**: Ephemeral test environments spun up dynamically in CI.
 6.  **IaC**: Terraform modules for VPC and EKS provisioning.
-7.  **Monitoring**: Prometheus & Grafana dashboards for real-time insights (see [MONITORING.md](./MONITORING.md)).
+7.  **Monitoring**: Prometheus & Grafana dashboards for real-time insights
 8.  **Zero-Downtime**: Rolling update strategy configured for seamless releases.
 9.  **Security**: Trivy vulnerability scanning and Kubernetes Secrets management.
 
-## 📄 Challenges & Solutions
-
-Development involves trade-offs. Read about the technical decisions and challenges faced during this project in [CHALLENGES.md](./CHALLENGES.md).
