@@ -11,6 +11,6 @@ spec:
   selector:
     app: postgres
   ports:
-    - port: 5432
-      targetPort: 5432
+    - port: {{ .Values.postgres.port }}
+      targetPort: {{ .Values.postgres.port }}
   type: ClusterIP
