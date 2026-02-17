@@ -2,8 +2,17 @@ from flask import Flask, jsonify
 import psycopg2
 import os
 from datetime import datetime
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)
+
+# Initialize DB on app startup
+@app.before_request
+def initialize_database():
+    if not hasattr(app, 'db_initialized'):
+        init_db()
+        app.db_initialized = True
 
 def get_db_connection():
     conn = psycopg2.connect(

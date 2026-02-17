@@ -1,38 +1,7 @@
+blueGreen:
+  enabled: false
+
 replicaCount: 1
 
-image:
-  repository: haimgoldman/flask-web
-  tag: v3.0
-  pullPolicy: IfNotPresent
-
-container:
-  name: flask-web-container
-  port: 8000
-
-service:
-  type: ClusterIP
-  port: 80
-  annotations: {}
-
-ingress:
-  className: nginx
-  host: flask-dev.local
-  path: /
-  pathType: Prefix
-  annotations: {}
-  tls: []
-
-deployment:
-  annotations: {}
-
-postgres:
-  image: postgres
-  tag: "15"
-  database: visitsdb
-  user: postgres
-  password: password
-  storage: 1Gi
-
 labels:
-  app: flask-web
   environment: dev

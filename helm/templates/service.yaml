@@ -15,6 +15,9 @@ spec:
   type: {{ .Values.service.type }}
   selector:
     app: {{ .Values.labels.app }}
+    {{- if .Values.blueGreen.enabled }}
+    version: {{ .Values.blueGreen.activeVersion }}
+    {{- end }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.container.port }}

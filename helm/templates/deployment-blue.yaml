@@ -1,22 +1,17 @@
-{{- if not .Values.blueGreen.enabled }}
+{{- if .Values.blueGreen.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployment
+  name: {{ .Release.Name }}-blue
   labels:
     app: {{ .Values.labels.app }}
-    {{- if .Values.labels.environment }}
-    environment: {{ .Values.labels.environment }}
-    {{- end }}
-  {{- with .Values.deployment.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    version: blue
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.blueGreen.blue.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.labels.app }}
+      version: blue
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -26,9 +21,7 @@ spec:
     metadata:
       labels:
         app: {{ .Values.labels.app }}
-        {{- if .Values.labels.environment }}
-        environment: {{ .Values.labels.environment }}
-        {{- end }}
+        version: blue
     spec:
       initContainers:
         - name: wait-for-postgres
@@ -41,10 +34,9 @@ spec:
                 echo "Waiting for PostgreSQL to be ready..."
                 sleep 2
               done
-              echo "PostgreSQL is ready!"
       containers:
         - name: {{ .Values.container.name }}
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          image: {{ .Values.image.repository }}:{{ .Values.blueGreen.blue.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.container.port }}
