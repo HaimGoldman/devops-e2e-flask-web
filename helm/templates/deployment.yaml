@@ -78,5 +78,5 @@ spec:
                   name: {{ .Values.postgres.existingSecret.name }}
                   key: {{ .Values.postgres.existingSecret.key }}
             - name: DB_PORT
-              value: {{ .Values.postgres.port }}
+              value: "{{ .Values.postgres.port }}"
 {{- end }}
