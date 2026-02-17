@@ -2,7 +2,7 @@ replicaCount: 3
 
 image:
   repository: haimgoldman/flask-web
-  tag: v3.1
+  tag: v4.0
   pullPolicy: IfNotPresent
 
 container:
@@ -44,6 +44,9 @@ postgres:
   tag: "15"
   database: visitsdb
   user: postgres
+  existingSecret:
+    name: "flask-db-secret"
+    key: "password"
   password: password
   port: 5432
   storage: 1Gi

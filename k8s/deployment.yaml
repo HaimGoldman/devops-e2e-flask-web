@@ -28,7 +28,7 @@ spec:
               echo "PostgreSQL is ready!"
       containers:
         - name: flask-web-container
-          image: haimgoldman/flask-web:v3.0
+          image: haimgoldman/flask-web:v4.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: flask-web-port

@@ -24,14 +24,17 @@ spec:
         - name: postgres
           image: {{ .Values.postgres.image }}:{{ .Values.postgres.tag }}
           ports:
-            - containerPort: 5432
+            - containerPort: {{ .Values.postgres.port }}
           env:
             - name: POSTGRES_DB
               value: {{ .Values.postgres.database }}
             - name: POSTGRES_USER
               value: {{ .Values.postgres.user }}
             - name: POSTGRES_PASSWORD
-              value: {{ .Values.postgres.password }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.existingSecret.name }}
+                  key: {{ .Values.postgres.existingSecret.key }}
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
           volumeMounts:

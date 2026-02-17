@@ -4,11 +4,11 @@ blueGreen:
   blue:
     replicas: 3
     image:
-      tag: v3.1
+      tag: v4.0
   green:
     replicas: 0
     image:
-      tag: v3.1
+      tag: v4.0
 
 labels:
   environment: prod
