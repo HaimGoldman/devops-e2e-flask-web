@@ -76,6 +76,13 @@ jobs:
       - name: Create test namespace
         run: kubectl create namespace test
 
+      - name: Create DB Secret from GitHub Secrets
+        run: |
+          kubectl create secret generic flask-db-secret \
+            --from-literal=password='${{ secrets.DB_PASSWORD }}' \
+            -n test \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy app and database to test namespace
         run: |
           helm upgrade --install flask-web-test helm \
