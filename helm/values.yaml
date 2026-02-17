@@ -77,15 +77,3 @@ monitoring:
 labels:
   app: flask-web
   environment: ""
-
-blueGreen:
-  enabled: true
-  activeVersion: blue
-  blue:
-    replicas: 3
-    image:
-      tag: v3.1
-  green:
-    replicas: 0
-    image:
-      tag: v3.1
