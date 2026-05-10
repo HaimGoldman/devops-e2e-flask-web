@@ -69,3 +69,21 @@ variable "eks_node_max_size" {
   type        = number
   default     = 3
 }
+
+variable "github_repo" {
+  description = "GitHub repo in format OWNER/REPO for OIDC trust policy"
+  type        = string
+  default     = "HaimGoldman/devops-e2e-flask-web"
+}
+
+variable "github_owner" {
+  description = "GitHub organization or username"
+  type        = string
+  default     = "HaimGoldman"
+}
+
+variable "github_repo_name" {
+  description = "GitHub repository name (without owner prefix)"
+  type        = string
+  default     = "devops-e2e-flask-web"
+}
