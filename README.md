@@ -76,17 +76,17 @@ A home budget management application used to showcase a production-grade **DevOp
 
 3. **Create Namespace & Secrets**:
    ```bash
-   kubectl create namespace eks
+   kubectl create namespace production
    kubectl create secret generic flask-db-secret \
-     --from-literal=password=<DB_PASSWORD> -n eks
+     --from-literal=password=<DB_PASSWORD> -n production
    kubectl create secret generic grafana-admin-secret \
-     --from-literal=admin-password=<GRAFANA_PASSWORD> -n eks
+     --from-literal=admin-password=<GRAFANA_PASSWORD> -n production
    ```
 
 4. **Deploy**:
    ```bash
    helm upgrade --install flask-web ./helm \
-     -f helm/values-eks.yaml -n eks
+     -f helm/values-eks.yaml -n production
    ```
 
 ### 🔑 Required GitHub Secrets
