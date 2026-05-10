@@ -60,7 +60,9 @@ monitoring:
   grafana:
     image: grafana/grafana
     tag: 10.2.2
-    adminPassword: admin
+    existingSecret:
+      name: "grafana-admin-secret"
+      key: "admin-password"
     serviceType: ClusterIP
     port: 3000
     rbac:

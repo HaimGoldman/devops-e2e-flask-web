@@ -105,7 +105,10 @@ spec:
               memory: 256Mi
           env:
             - name: GF_SECURITY_ADMIN_PASSWORD
-              value: {{ .Values.monitoring.grafana.adminPassword }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.monitoring.grafana.existingSecret.name }}
+                  key: {{ .Values.monitoring.grafana.existingSecret.key }}
             - name: GF_USERS_ALLOW_SIGN_UP
               value: "false"
             - name: GF_SERVER_ROOT_URL
