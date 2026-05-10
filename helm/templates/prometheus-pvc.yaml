@@ -1,0 +1,12 @@
+{{- if .Values.monitoring.prometheus.usePersistentVolume }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-prometheus-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.monitoring.prometheus.storage }}
+{{- end }}

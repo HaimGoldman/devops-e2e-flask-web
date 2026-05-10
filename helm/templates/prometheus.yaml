@@ -54,7 +54,12 @@ spec:
           configMap:
             name: {{ .Release.Name }}-prometheus-config
         - name: storage
+          {{- if .Values.monitoring.prometheus.usePersistentVolume }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-prometheus-pvc
+          {{- else }}
           emptyDir: {}
+          {{- end }}
 ---
 apiVersion: v1
 kind: Service
