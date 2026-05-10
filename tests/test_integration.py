@@ -7,7 +7,6 @@ BASE_URL = os.getenv('APP_URL', 'http://flask-web-svc')
 
 @pytest.fixture(scope="module")
 def wait_for_app():
-    """Wait for app to be ready before running tests"""
     max_retries = 30
     for i in range(max_retries):
         try:
@@ -27,28 +26,27 @@ def test_health_endpoint(wait_for_app):
     assert data['status'] == 'healthy'
     assert data['database'] == 'connected'
 
-def test_hello_endpoint(wait_for_app):
+def test_index_returns_budget_dashboard(wait_for_app):
     response = requests.get(f'{BASE_URL}/')
     assert response.status_code == 200
-    assert 'Hello World' in response.text
+    assert 'text/html' in response.headers['Content-Type']
+    assert 'מנהל תקציב' in response.text
 
-def test_stats_endpoint(wait_for_app):
-    num_visits = 3
-    
-    for _ in range(num_visits):
-        requests.get(f'{BASE_URL}/')
-        time.sleep(0.5)
-    
+def test_add_and_stats(wait_for_app):
+    requests.post(f'{BASE_URL}/transactions', data={
+        'amount': '500', 'category': 'משכורת',
+        'description': 'test', 'type': 'income'
+    })
+    requests.post(f'{BASE_URL}/transactions', data={
+        'amount': '200', 'category': 'מזון',
+        'description': 'test', 'type': 'expense'
+    })
+
     response = requests.get(f'{BASE_URL}/stats')
     assert response.status_code == 200
     data = response.json()
-    
-    assert 'last_hour' in data
-    assert 'last_day' in data
-    assert 'last_week' in data
-    assert 'last_month' in data
-   
-    assert data['last_hour'] >= num_visits
-    assert data['last_day'] >= num_visits
-    assert data['last_week'] >= num_visits
-    assert data['last_month'] >= num_visits
+    assert 'total_income' in data
+    assert 'total_expenses' in data
+    assert 'balance' in data
+    assert data['total_income'] >= 500
+    assert data['total_expenses'] >= 200
