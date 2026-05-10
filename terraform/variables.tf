@@ -88,6 +88,12 @@ variable "github_repo_name" {
   default     = "devops-e2e-flask-web"
 }
 
+variable "github_token" {
+  description = "GitHub personal access token for managing repository secrets"
+  type        = string
+  sensitive   = true
+}
+
 variable "allowed_cidr_blocks" {
   description = "CIDRs allowed to reach the EKS public endpoint. Override in terraform.tfvars with your IP."
   type        = list(string)
