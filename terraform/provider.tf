@@ -2,8 +2,13 @@ provider "aws" {
   region = var.aws_region
 }
 
+data "aws_secretsmanager_secret_value" "github_token" {
+  secret_id = "github-token"
+}
+
 provider "github" {
   owner = var.github_owner
+  token = data.aws_secretsmanager_secret_value.github_token.secret_string
 }
 
 data "aws_eks_cluster_auth" "this" {
