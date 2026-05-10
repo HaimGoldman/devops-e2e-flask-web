@@ -87,3 +87,9 @@ variable "github_repo_name" {
   type        = string
   default     = "devops-e2e-flask-web"
 }
+
+variable "allowed_cidr_blocks" {
+  description = "CIDRs allowed to reach the EKS public endpoint. Override in terraform.tfvars with your IP."
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
