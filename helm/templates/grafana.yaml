@@ -96,6 +96,13 @@ spec:
           image: {{ .Values.monitoring.grafana.image }}:{{ .Values.monitoring.grafana.tag }}
           ports:
             - containerPort: {{ .Values.monitoring.grafana.port }}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
           env:
             - name: GF_SECURITY_ADMIN_PASSWORD
               value: {{ .Values.monitoring.grafana.adminPassword }}
@@ -118,6 +125,13 @@ spec:
         {{- if .Values.monitoring.grafana.sidecar.dashboards.enabled }}
         - name: grafana-sc-dashboard
           image: {{ .Values.monitoring.grafana.sidecar.image }}:{{ .Values.monitoring.grafana.sidecar.tag }}
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
           env:
             - name: METHOD
               value: WATCH

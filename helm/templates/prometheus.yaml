@@ -37,6 +37,13 @@ spec:
             - '--web.external-url=http://{{ .Values.ingress.host }}/prometheus'
           ports:
             - containerPort: {{ .Values.monitoring.prometheus.port }}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
             - name: config
               mountPath: /etc/prometheus

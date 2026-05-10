@@ -42,12 +42,26 @@ spec:
                 sleep 2
               done
               echo "PostgreSQL is ready!"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
       containers:
         - name: {{ .Values.container.name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.container.port }}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
           readinessProbe:
             httpGet:
               path: /health
