@@ -43,3 +43,9 @@ resource "github_actions_secret" "aws_role_arn" {
   secret_name     = "AWS_ROLE_ARN"
   plaintext_value = aws_iam_role.github_actions.arn
 }
+
+resource "github_actions_variable" "eks_cluster_name" {
+  repository    = var.github_repo_name
+  variable_name = "EKS_CLUSTER_NAME"
+  value         = "${var.project_name}-${var.environment}"
+}
