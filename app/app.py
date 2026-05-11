@@ -87,11 +87,15 @@ def index():
 def add_transaction():
     try:
         amount = float(request.form['amount'])
-        category = request.form['category'].strip()
-        description = request.form.get('description', '').strip()
+        category = request.form['category'].strip()[:100]
+        description = request.form.get('description', '').strip()[:255]
         tx_type = request.form['type']
         if tx_type not in ('income', 'expense'):
             return 'Invalid type', 400
+        if amount <= 0:
+            return 'Amount must be positive', 400
+        if not category:
+            return 'Category is required', 400
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute(
@@ -101,9 +105,11 @@ def add_transaction():
         conn.commit()
         cur.close()
         conn.close()
+    except (ValueError, KeyError) as e:
+        return 'Invalid input', 400
     except Exception as e:
-        return str(e), 500
-    from flask import redirect
+        logger.error(f"Failed to add transaction: {e}")
+        return 'Internal server error', 500
     return redirect('/')
 
 
@@ -117,8 +123,8 @@ def delete_transaction(tx_id):
         cur.close()
         conn.close()
     except Exception as e:
-        return str(e), 500
-    from flask import redirect
+        logger.error(f"Failed to delete transaction {tx_id}: {e}")
+        return 'Internal server error', 500
     return redirect('/')
 
 
@@ -139,7 +145,8 @@ def stats():
             "balance": total_income - total_expenses
         }), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"Failed to get stats: {e}")
+        return jsonify({"error": "Internal server error"}), 500
 
 
 @app.route('/health')
