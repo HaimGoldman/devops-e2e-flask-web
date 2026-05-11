@@ -28,6 +28,10 @@ spec:
       labels:
         app: prometheus
     spec:
+      securityContext:
+        fsGroup: 65534
+        runAsUser: 65534
+        runAsNonRoot: true
       containers:
         - name: prometheus
           image: {{ .Values.monitoring.prometheus.image }}:{{ .Values.monitoring.prometheus.tag }}
@@ -37,6 +41,13 @@ spec:
             - '--web.external-url=http://{{ .Values.ingress.host }}/prometheus'
           ports:
             - containerPort: {{ .Values.monitoring.prometheus.port }}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
             - name: config
               mountPath: /etc/prometheus
@@ -47,7 +58,12 @@ spec:
           configMap:
             name: {{ .Release.Name }}-prometheus-config
         - name: storage
+          {{- if .Values.monitoring.prometheus.usePersistentVolume }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-prometheus-pvc
+          {{- else }}
           emptyDir: {}
+          {{- end }}
 ---
 apiVersion: v1
 kind: Service

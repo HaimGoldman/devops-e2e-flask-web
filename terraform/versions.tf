@@ -9,5 +9,9 @@ terraform {
       source  = "hashicorp/helm"
       version = "~> 2.12"
     }
+    github = {
+      source  = "integrations/github"
+      version = "~> 6.0"
+    }
   }
 }
