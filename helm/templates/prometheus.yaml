@@ -28,6 +28,10 @@ spec:
       labels:
         app: prometheus
     spec:
+      securityContext:
+        fsGroup: 65534
+        runAsUser: 65534
+        runAsNonRoot: true
       containers:
         - name: prometheus
           image: {{ .Values.monitoring.prometheus.image }}:{{ .Values.monitoring.prometheus.tag }}
