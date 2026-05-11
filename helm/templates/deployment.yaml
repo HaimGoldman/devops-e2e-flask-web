@@ -30,6 +30,9 @@ spec:
         environment: {{ .Values.labels.environment }}
         {{- end }}
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
       initContainers:
         - name: wait-for-postgres
           image: {{ .Values.postgres.image }}:{{ .Values.postgres.tag }}
