@@ -1,4 +1,4 @@
-{{- if not .Values.blueGreen.enabled }}
+{{- if not (and .Values.blueGreen .Values.blueGreen.enabled) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
