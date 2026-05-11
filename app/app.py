@@ -1,18 +1,14 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect
 import psycopg2
 import os
-from datetime import datetime
+import logging
 from prometheus_flask_exporter import PrometheusMetrics
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)
-
-
-@app.before_request
-def initialize_database():
-    if not hasattr(app, 'db_initialized'):
-        init_db()
-        app.db_initialized = True
 
 
 def get_db_connection():
@@ -20,7 +16,7 @@ def get_db_connection():
         host=os.getenv('DB_HOST', 'localhost'),
         database=os.getenv('DB_NAME', 'visitsdb'),
         user=os.getenv('DB_USER', 'postgres'),
-        password=os.getenv('DB_PASSWORD', 'password'),
+        password=os.environ['DB_PASSWORD'],
         port=os.getenv('DB_PORT', '5432')
     )
     return conn
@@ -44,7 +40,7 @@ def init_db():
         cur.close()
         conn.close()
     except Exception as e:
-        print(f"Database initialization error: {e}")
+        logger.error(f"Database initialization error: {e}")
 
 
 @app.route('/')
@@ -237,5 +233,6 @@ def health():
 
 
 if __name__ == '__main__':
-    init_db()
+    with app.app_context():
+        init_db()
     app.run(host='0.0.0.0', port=8000)
