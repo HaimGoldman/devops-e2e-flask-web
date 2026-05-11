@@ -6,6 +6,10 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
 
+postgres:
+  storageClassName: gp2
+
 monitoring:
   prometheus:
     usePersistentVolume: true
+    storageClassName: gp2

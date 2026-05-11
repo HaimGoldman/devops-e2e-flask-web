@@ -6,6 +6,9 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  {{- if .Values.monitoring.prometheus.storageClassName }}
+  storageClassName: {{ .Values.monitoring.prometheus.storageClassName }}
+  {{- end }}
   resources:
     requests:
       storage: {{ .Values.monitoring.prometheus.storage }}
