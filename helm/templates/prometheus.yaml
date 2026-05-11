@@ -38,7 +38,9 @@ spec:
           args:
             - '--config.file=/etc/prometheus/prometheus.yml'
             - '--storage.tsdb.path=/prometheus'
+            {{- if .Values.ingress.host }}
             - '--web.external-url=http://{{ .Values.ingress.host }}/prometheus'
+            {{- end }}
           ports:
             - containerPort: {{ .Values.monitoring.prometheus.port }}
           resources:
