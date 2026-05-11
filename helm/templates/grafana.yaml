@@ -111,8 +111,10 @@ spec:
                   key: {{ .Values.monitoring.grafana.existingSecret.key }}
             - name: GF_USERS_ALLOW_SIGN_UP
               value: "false"
+            {{- if .Values.ingress.host }}
             - name: GF_SERVER_ROOT_URL
               value: "http://{{ .Values.ingress.host }}/grafana"
+            {{- end }}
             - name: GF_SERVER_SERVE_FROM_SUB_PATH
               value: "true"
           volumeMounts:
